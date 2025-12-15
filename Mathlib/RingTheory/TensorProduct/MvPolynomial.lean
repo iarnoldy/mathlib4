@@ -115,7 +115,6 @@ lemma algebraTensorAlgEquiv_symm_monomial (m : σ →₀ ℕ) (a : A) :
     (algebraTensorAlgEquiv R A).symm (monomial m a) = a ⊗ₜ monomial m 1 :=
   AddMonoidAlgebra.scalarTensorEquiv_symm_single ..
 
-set_option backward.isDefEq.respectTransparency false in
 set_option allowUnsafeReducibility true in
 attribute [local reducible] MvPolynomial in
 @[simp]
@@ -153,35 +152,30 @@ variable {R}
 
 attribute [local simp] Algebra.smul_def
 
-set_option backward.isDefEq.respectTransparency false in
 set_option allowUnsafeReducibility true in
 attribute [local reducible] MvPolynomial in
 @[simp] lemma tensorEquivSum_X_tmul_one (i) :
     tensorEquivSum R σ ι S (.X i ⊗ₜ 1) = .X (.inl i) := by
   simp [tensorEquivSum, algebraTensorAlgEquiv, sumAlgEquiv, renameEquiv, rename, X, monomial]
 
-set_option backward.isDefEq.respectTransparency false in
 set_option allowUnsafeReducibility true in
 attribute [local reducible] MvPolynomial in
 @[simp] lemma tensorEquivSum_C_tmul_one (r) :
     tensorEquivSum R σ ι S (.C r ⊗ₜ 1) = .C r := by
   simp [tensorEquivSum, algebraTensorAlgEquiv, sumAlgEquiv, renameEquiv, rename, C, monomial]
 
-set_option backward.isDefEq.respectTransparency false in
 set_option allowUnsafeReducibility true in
 attribute [local reducible] MvPolynomial in
 @[simp] lemma tensorEquivSum_one_tmul_X (i) :
     tensorEquivSum R σ ι S (1 ⊗ₜ .X i) = .X (.inr i) := by
   simp [tensorEquivSum, algebraTensorAlgEquiv, sumAlgEquiv, renameEquiv, rename, X, monomial]
 
-set_option backward.isDefEq.respectTransparency false in
 set_option allowUnsafeReducibility true in
 attribute [local reducible] MvPolynomial in
 @[simp] lemma tensorEquivSum_one_tmul_C (r) :
     tensorEquivSum R σ ι S (1 ⊗ₜ .C r) = .C (algebraMap R S r) := by
   simp [tensorEquivSum, algebraTensorAlgEquiv, sumAlgEquiv, renameEquiv, rename, C, monomial]
 
-set_option backward.isDefEq.respectTransparency false in
 set_option allowUnsafeReducibility true in
 attribute [local reducible] MvPolynomial in
 @[simp] lemma tensorEquivSum_C_tmul_C (r : R) (s : S) :
@@ -189,7 +183,6 @@ attribute [local reducible] MvPolynomial in
   simp [tensorEquivSum, algebraTensorAlgEquiv, sumAlgEquiv, renameEquiv, rename, C, monomial,
     mul_comm]
 
-set_option backward.isDefEq.respectTransparency false in
 set_option allowUnsafeReducibility true in
 attribute [local reducible] MvPolynomial in
 @[simp] lemma tensorEquivSum_X_tmul_X (i j) :

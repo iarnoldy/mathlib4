@@ -262,13 +262,13 @@ variable (k G) in
 /-- This a type-changing equivalence to avoid abusing defeq. -/
 def linearizeOfMulActionIso (H : Type w) [MulAction G H] :
     (linearize k G (Action.ofMulAction G H)).Equiv (ofMulAction k G H) :=
-    .mk (LinearEquiv.refl _ _) fun g ↦ by rfl
+  .mk (MonoidAlgebra.coeffLinearEquiv _).symm fun _ ↦ rfl
 
 variable (k G) in
 /-- This a type-changing equivalence to avoid abusing defeq. -/
 def linearizeDiagonalEquiv (n : ℕ) : (linearize k G (Action.diagonal G n)).Equiv
     (diagonal k G n) :=
-  .mk (LinearEquiv.refl _ _) fun g ↦ by rfl
+  .mk (MonoidAlgebra.coeffLinearEquiv _).symm fun _ ↦ rfl
 
 end LinearizeMonoidal
 
