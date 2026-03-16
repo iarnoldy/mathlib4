@@ -70,21 +70,7 @@ variable (σ R)
 /-- The submodule of homogeneous `MvPolynomial`s of degree `n`. -/
 def homogeneousSubmodule (n : ℕ) : Submodule R (MvPolynomial σ R) where
   carrier := { x | x.IsHomogeneous n }
-  smul_mem' r a ha c hc := by
-    rw [coeff_smul] at hc
-    apply ha
-    intro h
-    apply hc
-    rw [h]
-    exact smul_zero r
-  zero_mem' _ hd := False.elim (hd <| coeff_zero _)
-  add_mem' {a b} ha hb c hc := by
-    rw [coeff_add] at hc
-    obtain h | h : coeff c a ≠ 0 ∨ coeff c b ≠ 0 := by
-      contrapose! hc
-      simp only [hc, add_zero]
-    · exact ha h
-    · exact hb h
+  __ := weightedHomogeneousSubmodule R 1 n
 
 @[simp]
 lemma weightedHomogeneousSubmodule_one (n : ℕ) :
@@ -100,12 +86,13 @@ variable (σ R)
 
 /-- While equal, the former has a convenient definitional reduction. -/
 theorem homogeneousSubmodule_eq_finsupp_supported (n : ℕ) :
-    homogeneousSubmodule σ R n = Finsupp.supported _ R { d | d.degree = n } := by
+    homogeneousSubmodule σ R n = AddMonoidAlgebra.supported _ R {d | d.degree = n} := by
   simp_rw [degree_eq_weight_one]
   exact weightedHomogeneousSubmodule_eq_finsupp_supported R 1 n
 
 variable {σ R}
 
+set_option backward.isDefEq.respectTransparency false in
 theorem homogeneousSubmodule_mul (m n : ℕ) :
     homogeneousSubmodule σ R m * homogeneousSubmodule σ R n ≤ homogeneousSubmodule σ R (m + n) :=
   weightedHomogeneousSubmodule_mul 1 m n
@@ -113,9 +100,9 @@ theorem homogeneousSubmodule_mul (m n : ℕ) :
 set_option backward.isDefEq.respectTransparency false in
 lemma homogeneousSubmodule_one_eq_span_X :
     MvPolynomial.homogeneousSubmodule σ R 1 = .span R (.range X) := by
-  rw [MvPolynomial.homogeneousSubmodule_eq_finsupp_supported, Finsupp.supported_eq_span_single]
-  simp_rw [MvPolynomial.single_eq_monomial, ← Finsupp.range_single_one, ← Set.range_comp,
-    Function.comp_def, ← X_pow_eq_monomial, pow_one]
+  simp [MvPolynomial.homogeneousSubmodule_eq_finsupp_supported,
+    AddMonoidAlgebra.supported_eq_span_single, MvPolynomial.single_eq_monomial,
+    ← Finsupp.range_single_one, ← Set.range_comp, Function.comp_def, ← X_pow_eq_monomial]
 
 section
 
@@ -218,6 +205,7 @@ theorem sum {ι : Type*} (s : Finset ι) (φ : ι → MvPolynomial σ R) (n : �
     (h : ∀ i ∈ s, IsHomogeneous (φ i) n) : IsHomogeneous (∑ i ∈ s, φ i) n :=
   (homogeneousSubmodule σ R n).sum_mem h
 
+set_option backward.isDefEq.respectTransparency false in
 theorem mul (hφ : IsHomogeneous φ m) (hψ : IsHomogeneous ψ n) : IsHomogeneous (φ * ψ) (m + n) :=
   homogeneousSubmodule_mul m n <| Submodule.mul_mem_mul hφ hψ
 
@@ -268,8 +256,11 @@ lemma eval₂ (hφ : φ.IsHomogeneous m) (f : R →+* MvPolynomial τ S) (g : σ
   · rintro k -
     apply (hg k).pow
 
-lemma map (hφ : φ.IsHomogeneous n) (f : R →+* S) : (map f φ).IsHomogeneous n := by
-  simpa only [one_mul] using hφ.eval₂ _ _ (fun r ↦ isHomogeneous_C _ (f r)) (isHomogeneous_X _)
+set_option allowUnsafeReducibility true in
+attribute [local reducible] MvPolynomial in
+protected lemma map (hφ : φ.IsHomogeneous n) (f : R →+* S) : (map f φ).IsHomogeneous n := by
+  rw [← eval₂Hom_C_comp_X]
+  simpa [one_mul] using hφ.eval₂ _ _ (fun r ↦ isHomogeneous_C _ (f r)) (isHomogeneous_X _)
 
 lemma of_map {f : R →+* S} (hf : Function.Injective f)
     (h : (MvPolynomial.map f φ).IsHomogeneous n) : φ.IsHomogeneous n :=
